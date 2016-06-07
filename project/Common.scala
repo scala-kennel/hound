@@ -8,6 +8,10 @@ import dog.DogPlugin.autoImport._
 
 object Common {
 
+  private object Version {
+    val dog = "0.3.0"
+  }
+
   private def gitHash: String = scala.util.Try(
     sys.process.Process("git rev-parse HEAD").lines_!.head
   ).getOrElse("master")
@@ -26,8 +30,9 @@ object Common {
   ).flatten ++ Seq(
     scalaVersion := scala211,
     crossScalaVersions := Seq("2.10.6", scala211),
-    dogVersion := "0.3.0",
+    dogVersion := Version.dog,
     libraryDependencies ++= Seq(
+      "com.github.pocketberserker" %% "dog" % Version.dog,
       "ai.x" %% "diff" % "1.0.1"
     ),
     resolvers += Opts.resolver.sonatypeReleases,
