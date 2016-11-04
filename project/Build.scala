@@ -5,16 +5,25 @@ import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype._
 import com.typesafe.sbt.pgp.PgpKeys
 import dog.DogPlugin.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
-object Common {
+object Build {
 
   private object Version {
-    val dog = "0.3.0"
+    val dog = "0.6.0"
   }
 
   private def gitHash: String = scala.util.Try(
     sys.process.Process("git rev-parse HEAD").lines_!.head
   ).getOrElse("master")
+
+  private val tagName = Def.setting{
+    s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+  }
+  private val tagOrHash = Def.setting{
+    if(isSnapshot.value) gitHash else tagName.value
+  }
 
   private[this] val unusedWarnings = (
     "-Ywarn-unused" ::
@@ -24,16 +33,18 @@ object Common {
 
   private[this] val scala211 = "2.11.8"
 
-  lazy val commonSettings = Seq(
+  lazy val buildSettings = Seq(
     sonatypeSettings,
     dogSettings
   ).flatten ++ Seq(
     scalaVersion := scala211,
-    crossScalaVersions := Seq("2.10.6", scala211),
+    crossScalaVersions := Seq("2.10.6", scala211, "2.12.0"),
+    scalaJSStage in Global := FastOptStage,
     dogVersion := Version.dog,
     libraryDependencies ++= Seq(
-      "com.github.pocketberserker" %% "dog" % Version.dog,
-      "ai.x" %% "diff" % "1.0.1"
+      "com.github.pocketberserker" %%% "dog" % Version.dog % "test",
+      "com.github.pocketberserker" %%% "dog-core" % Version.dog,
+      "com.chuusai" %%% "shapeless" % "2.3.2"
     ),
     resolvers += Opts.resolver.sonatypeReleases,
     scalacOptions ++= (
@@ -105,4 +116,13 @@ object Common {
     scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
   )
 
+  lazy val hound = crossProject.crossType(CrossType.Full).in(file(".")).settings(
+    buildSettings: _*
+  ).jsSettings(
+    scalacOptions += {
+      val a = (baseDirectory in LocalRootProject).value.toURI.toString
+      val g = "https://raw.githubusercontent.com/scala-kennel/hound/" + tagOrHash.value
+      s"-P:scalajs:mapSourceURI:$a->$g/"
+    }
+  )
 }
