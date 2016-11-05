@@ -46,6 +46,12 @@ object Build {
       "com.github.pocketberserker" %%% "dog-core" % Version.dog,
       "com.chuusai" %%% "shapeless" % "2.3.2"
     ),
+    libraryDependencies ++= {
+      if (scalaBinaryVersion.value startsWith "2.10")
+        Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full))
+      else
+        Nil
+    },
     resolvers += Opts.resolver.sonatypeReleases,
     scalacOptions ++= (
       "-deprecation" ::
