@@ -35,7 +35,7 @@ object Build {
 
   lazy val buildSettings = Seq(
     sonatypeSettings,
-    dogSettings
+    dogCoreSettings
   ).flatten ++ Seq(
     scalaVersion := scala211,
     crossScalaVersions := Seq("2.10.6", scala211, "2.12.0"),
