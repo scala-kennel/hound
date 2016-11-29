@@ -28,7 +28,7 @@ ${result}"""
       case DiffTree.Error(e) => -\/(e)
     }
     go(\/-(""), ".", tree).fold(
-      e => FreeAp.lift[ComposableTestC, A](LazyTuple2(Param.id, ComposableTest.HandleError(e))),
+      e => TestCase.handle(IList.single(e)),
       v => fail(v)
     )
   }
