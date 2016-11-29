@@ -107,7 +107,7 @@ object Build {
         <tag>{if(isSnapshot.value) gitHash else { "v" + version.value }}</tag>
       </scm>
     ,
-    description := "yet another testing framework",
+    description := "`hound` provide custom assertions for dog.",
     pomPostProcess := { node =>
       import scala.xml._
       import scala.xml.transform._
