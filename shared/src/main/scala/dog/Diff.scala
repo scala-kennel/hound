@@ -39,6 +39,8 @@ object Diff {
   }
 
   implicit val booleanDiff: Diff[Boolean] = primitive
+  implicit val byteDiff: Diff[Byte] = primitive
+  implicit val shortDiff: Diff[Short] = primitive
   implicit val floatDiff: Diff[Float] = primitive
   implicit val doubleDiff: Diff[Double] = primitive
   implicit val intDiff: Diff[Int] = primitive
