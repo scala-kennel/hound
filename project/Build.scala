@@ -11,7 +11,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 object Build {
 
   private object Version {
-    val dog = "0.7.0"
+    val dog = "0.8.0"
   }
 
   private def gitHash: String = scala.util.Try(
