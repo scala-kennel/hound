@@ -67,8 +67,8 @@ private final class DiffTypeClassImpl() extends LabelledTypeClass[Diff] {
       override def diff(left: L :+: R, right: L :+: R) = (left, right) match {
         case (Inl(l1), Inl(l2)) => cl.diff(l1, l2)
         case (Inr(r1), Inr(r2)) => cr.diff(r1, r2)
-        case (Inl(l), Inr(r)) => DiffTree.different(name, dump(r))
-        case (Inr(l), Inl(r)) => DiffTree.different(name, r.toString)
+        case (Inl(_), Inr(r)) => DiffTree.different(name, dump(r))
+        case (Inr(_), Inl(r)) => DiffTree.different(name, r.toString)
       }
     }
   }
